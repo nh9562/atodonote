@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="calendar">
+
+	<!-- todoWrite 시작 -->
+	<insert id="todoWrite" parameterType="hashMap" useGeneratedKeys="true" keyProperty="mNum" >
+		 <![CDATA[
+		 insert into memo (uId, subject, eventDate, regTM)
+		 values (#{todoWriteUId}, #{todayCntAddInsert}, #{currentPageDate}, now());
+		 ]]>
+	</insert>
+	<!-- todoWrite 끝 -->	
+	
+	<!-- todoWrite 후 생성된 mNum 가져오기 시작 -->
+	<select id="todoWriteGetMNum" parameterType="hashMap" resultType="int">
+		 <![CDATA[
+		 select mNum from memo
+		 where uId=#{todoWriteUId} and subject=#{todayCntAddInsert} and eventDate=#{currentPageDate};
+		 ]]>	
+	</select>
+	<!-- todoWrite 후 생성된 mNum 가져오기 끝 -->
+	
+	<!-- todoWrite 후 라벨 매칭 시작 -->
+	<insert id="todoWriteMatch" parameterType="hashMap" useGeneratedKeys="true" keyProperty="num">
+		 <![CDATA[
+		insert labelMatch(mNum, labelName)
+		values(#{mNum},'none');
+		 ]]>
+	</insert>
+	<!-- todoWrite 후 라벨 매칭 끝 -->
+	
+	<!-- todoPrint 시작 -->
+	<select id="todoPrint" parameterType="hashMap" resultType="pack.spring.aTodoNote.calendar.CalendarDTO">
+		<![CDATA[
+		select m.*, l.labelName from memo m
+		inner join labelmatch l
+		on m.mNum = l.mNum
+		where uId=#{session_uId} and eventDate=#{selectDate}
+		order by mNum desc;
+		 ]]>
+	</select>
+	<!-- todoPrint 끝 -->
+	
+	<!-- todoDel 시작 -->
+	<delete id="todoDel" parameterType="hashMap" >
+		<![CDATA[
+		delete from memo
+		where mNum = #{mNum} and uId = #{session_uId};
+		 ]]>	
+	</delete>
+	<!-- todoDel 끝 -->
+	
+	<!-- labelList 시작 -->
+	<select id="labelList" parameterType="hashMap" resultType="pack.spring.aTodoNote.calendar.CalendarDTO">
+		<![CDATA[
+		select m.*, l.labelName from memo m
+		inner join labelmatch l
+		on m.mNum = l.mNum
+		where uId=#{session_uId} and labelName=#{color}
+		order by eventDate desc, mNum desc;;
+		 ]]>
+	</select>
+	<!-- labelList 끝 -->
+	
+	<!-- linkList 시작 -->
+	<select id="linkList" parameterType="hashMap" resultType="pack.spring.aTodoNote.calendar.CalendarDTO">
+		<![CDATA[
+		select * from memo
+		where uId=#{session_uId} and link != ''
+		order by eventDate desc, mNum desc;
+		 ]]>
+	</select>
+	<!-- linkList 끝 -->	
+
+	<!-- fileList 시작 -->
+	<select id="fileList" parameterType="hashMap" resultType="pack.spring.aTodoNote.calendar.CalendarDTO">
+		<![CDATA[
+		select * from memo
+		where uId=#{session_uId} and fileName != ''
+		order by eventDate desc, mNum desc;
+		 ]]>
+	</select>
+	<!-- fileList 끝 -->
+		
+	<!-- memoList 시작 -->
+	<select id="memoList" parameterType="hashMap" resultType="pack.spring.aTodoNote.calendar.CalendarDTO">
+		<![CDATA[
+		select * from memo
+		where uId=#{session_uId} and eventDate ='' or eventDate is null
+		order by mNum desc;
+		 ]]>
+	</select>
+	<!-- memoList 끝 -->
+	
+	<!-- memoWrite 시작 -->
+	<insert id="memoWrite" parameterType="hashMap" useGeneratedKeys="true" keyProperty="mNum" >
+		 <![CDATA[
+		 insert into memo (uId, subject, regTM)
+		 values (#{session_uId}, #{memoInsert}, now());
+		 ]]>
+	</insert>
+	<!-- todoWrite 끝 -->	
+	
+</mapper>

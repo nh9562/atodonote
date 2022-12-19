@@ -1,0 +1,37 @@
+@charset "UTF-8";
+
+@font-face{
+	font-family: 'Noto Sans KR';
+	src:url('/resources/style/fonts/NotoSansKR/NotoSansKR-Black.otf') format('otf');
+	font-weight:100;	
+}
+
+@font-face{
+	font-family: 'Noto Sans KR';
+	src:url('/resources/style/fonts/NotoSansKR/NotoSansKR-Light.otf') format('otf');
+	font-weight:200;	
+}
+
+@font-face{
+	font-family: 'Noto Sans KR';
+	src:url('/resources/style/fonts/NotoSansKR/NotoSansKR-Regular.otf') format('otf');
+	font-weight:300;	
+}
+
+@font-face{
+	font-family: 'Noto Sans KR';
+	src:url('/resources/style/fonts/NotoSansKR/NotoSansKR-Medium.otf') format('otf');
+	font-weight:400;	
+}
+
+@font-face{
+	font-family: 'Noto Sans KR';
+	src:url('/resources/style/fonts/NotoSansKR/NotoSansKR-Bold.otf') format('otf');
+	font-weight:500;	
+}
+
+@font-face{
+	font-family: 'Noto Sans KR';
+	src:url('/resources/style/fonts/NotoSansKR/NotoSansKR-Black.otf') format('otf');
+	font-weight:600;	
+}
