@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="calendar">
+
+	<!-- todoWrite 시작 -->
+	<insert id="todoWrite" parameterType="hashMap" useGeneratedKeys="true" keyProperty="mNum" >
+		 <![CDATA[
+		 insert into memo (uId, subject, eventDate, regTM)
+		 values (#{todoWriteUId}, #{todayCntAddInsert}, #{currentPageDate}, now());
+		 ]]>
+	</insert>
+	<!-- todoWrite 끝 -->	
+	
+	<!-- todoWrite 후 생성된 mNum 가져오기 시작 -->
+	<select id="todoWriteGetMNum" parameterType="hashMap" resultType="int">
+		 <![CDATA[
+		 select mNum from memo
+		 where uId=#{todoWriteUId} and subject=#{todayCntAddInsert} and eventDate=#{currentPageDate}
+		 order by mNum desc limit 1;
+		 ]]>	
+	</select>
+	<!-- todoWrite 후 생성된 mNum 가져오기 끝 -->
+	
+	<!-- todoWrite 후 라벨 매칭 시작 -->
+	<insert id="todoWriteMatch" parameterType="hashMap" useGeneratedKeys="true" keyProperty="num">
+		 <![CDATA[
+		insert labelMatch(mNum, labelName)
+		values(#{mNum},'none');
+		 ]]>
+	</insert>
+	<!-- todoWrite 후 라벨 매칭 끝 -->
+	
+	<!-- todoPrint 시작 -->
+	<select id="todoPrint" parameterType="hashMap" resultType="pack.spring.aTodoNote.calendar.CalendarDTO">
+		<![CDATA[
+		select m.*, l.labelName from memo m
+		inner join labelmatch l
+		on m.mNum = l.mNum
+		where uId=#{session_uId} and eventDate=#{selectDate}
+		order by mNum desc;
+		 ]]>
+	</select>
+	<!-- todoPrint 끝 -->
+	
+	<!-- todoDel 시작 -->
+	<delete id="todoDel" parameterType="hashMap" >
+		<![CDATA[
+		delete from memo
+		where mNum = #{mNum} and uId = #{session_uId};
+		 ]]>	
+	</delete>
+	<!-- todoDel 끝 -->
+	
+	<!-- todoDel - getCalDto 시작 -->
+	<select id="getCalDto" parameterType="hashMap" resultType="pack.spring.aTodoNote.calendar.CalendarDTO">
+		<![CDATA[
+		select * from memo
+		where mNum = #{mNum} and uId = #{session_uId};
+		 ]]>	
+	</select>
+	<!-- todoDel - getCalDto 끝 -->
+	
+	<!-- labelList 시작 -->
+	<select id="labelList" parameterType="hashMap" resultType="pack.spring.aTodoNote.calendar.CalendarDTO">
+		<![CDATA[
+		select m.*, l.labelName from memo m
+		inner join labelmatch l
+		on m.mNum = l.mNum
+		where uId=#{session_uId} and labelName=#{color}
+		order by eventDate desc, mNum desc;;
+		 ]]>
+	</select>
+	<!-- labelList 끝 -->
+	
+	<!-- linkList 시작 -->
+	<select id="linkList" parameterType="hashMap" resultType="pack.spring.aTodoNote.calendar.CalendarDTO">
+		<![CDATA[
+		select * from memo
+		where uId=#{session_uId} and link != ''
+		order by eventDate desc, mNum desc;
+		 ]]>
+	</select>
+	<!-- linkList 끝 -->	
+
+	<!-- fileList 시작 -->
+	<select id="fileList" parameterType="hashMap" resultType="pack.spring.aTodoNote.calendar.CalendarDTO">
+		<![CDATA[
+		select * from memo
+		where uId=#{session_uId} and fileName != ''
+		order by eventDate desc, mNum desc;
+		 ]]>
+	</select>
+	<!-- fileList 끝 -->
+		
+	<!-- memoList 시작 -->
+	<select id="memoList" parameterType="hashMap" resultType="pack.spring.aTodoNote.calendar.CalendarDTO">
+		<![CDATA[
+		select * from memo
+		where uId=#{session_uId} and eventDate ='' or eventDate is null
+		order by mNum desc;
+		 ]]>
+	</select>
+	<!-- memoList 끝 -->
+	
+	<!-- memoWrite 시작 -->
+	<insert id="memoWrite" parameterType="hashMap" useGeneratedKeys="true" keyProperty="mNum" >
+		 <![CDATA[
+		 insert into memo (uId, subject, regTM)
+		 values (#{session_uId}, #{memoInsert}, now());
+		 ]]>
+	</insert>
+	<!-- todoWrite 끝 -->
+		
+	<!-- mainWrite 시작 -->
+	<insert id="mainWrite" parameterType="hashMap" useGeneratedKeys="true" keyProperty="mNum" >
+		 <![CDATA[
+		 insert into memo (uId, subject, content, eventDate, link, fileName, originalFileName, fileSize, regTM)
+		 values (#{session_uId}, #{mainWriteSubject}, #{mainWriteContent}, #{mainWriteEventDate},
+		 	#{mainWriteLink}, #{fileName}, #{originalfileName}, #{fileSize}, now());
+		 ]]>
+	</insert>
+	<!-- mainWrite 끝 -->	
+	
+	<!-- mainWrite 후 라벨 매칭 시작 -->
+	<insert id="mainWriteMatch" parameterType="hashMap" useGeneratedKeys="true" keyProperty="num">
+		 <![CDATA[
+		insert labelMatch(mNum, labelName)
+		values(#{mNum},#{mainWriteLabel});
+		 ]]>
+	</insert>
+	<!-- mainWrite 후 라벨 매칭 끝 -->
+	
+	<!-- detailEditNFile 시작 여기부터 작업 : 새 file 없는 경우 -->
+	<update id="detailEditNFile" parameterType="hashMap">
+		 <![CDATA[
+		 update memo
+		 set subject = #{detailModal_subject}, content = #{detailModal_content},
+		 	eventDate = #{detailModal_eventDate}, link = #{detaiModal_reslink}
+		 where mNum = #{detailModal_mNum} and uId = #{detailModal_uId};
+		 ]]>
+	</update>
+	<!-- detailEditNFile 끝 -->	
+	
+	<!-- detailEditFile 시작 여기부터 작업 : 새 file 있는 경우 -->
+	<update id="detailEditFile" parameterType="hashMap">
+		 <![CDATA[
+		 update memo
+		 set subject = #{detailModal_subject}, content = #{detailModal_content},
+		 	eventDate = #{detailModal_eventDate}, link = #{detaiModal_reslink},
+		 	fileName = #{fileName}, originalfileName=#{originalfileName}, fileSize = #{fileSize}
+		 where mNum = #{detailModal_mNum} and uId = #{detailModal_uId};
+		 ]]>
+	</update>
+	<!-- detailEditFile 끝 -->	
+	
+	<update id="detailEditMatch" parameterType="hashMap">
+		 <![CDATA[
+		update labelMatch
+		set labelName = #{detailModal_labelName}
+		where mNum= #{detailModal_mNum};
+		 ]]>
+	</update>	
+	
+	<select id="getCalDtoDetail" parameterType="hashMap" resultType="pack.spring.aTodoNote.calendar.CalendarDTO">
+		<![CDATA[
+		select * from memo
+		where mNum = #{detailModal_mNum} and uId = #{session_uId};
+		 ]]>	
+	</select>
+	
+	<!-- searchList 시작 -->
+	<select id="searchList" parameterType="hashMap" resultType="pack.spring.aTodoNote.calendar.CalendarDTO">
+		<![CDATA[
+		select m.*, l.labelName from memo m
+		inner join labelmatch l
+		on m.mNum = l.mNum
+		where uId= #{session_uId} and subject like concat('%',#{keyWord},'%') or content like concat('%',#{keyWord},'%')
+		order by mNum desc
+		limit #{pageStart}, #{perPageNum};
+		 ]]>
+	</select>
+	<!-- searchList 끝 -->
+	
+	<!-- searchListCnt 시작 -->
+	<select id="searchListCnt" parameterType="hashMap" resultType="int">
+		<![CDATA[
+		select count(*) from memo m
+		inner join labelmatch l
+		on m.mNum = l.mNum
+		where uId= #{session_uId}  and subject like concat('%',#{keyWord},'%') or content like concat('%',#{keyWord},'%');
+		 ]]>
+	</select>
+	<!-- searchListCnt 끝 -->
+	
+</mapper>

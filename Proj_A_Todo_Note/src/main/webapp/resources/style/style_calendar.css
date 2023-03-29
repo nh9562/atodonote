@@ -1,0 +1,116 @@
+@charset "UTF-8";
+
+.mainDays {
+	display: flex;
+	margin: 0;  
+	border: 1px solid #9400d3;
+	border-radius: 5px 5px 0 0;
+	height: 28px;
+	background:#9400d3;
+	font-weight: 600;
+}
+
+.mainEnds{
+	margin: 0;  
+	border: 1px solid #9400d3;
+	border-top: 0px;
+	border-radius: 0 0 5px 5px;
+	height: 12px;
+	background:#9400d3;
+}
+
+.mainDay {
+	width: calc(100% / 7);
+	text-align: center;
+}
+
+.mainDates {
+	display: flex;
+	flex-flow: row wrap;
+	height: 510px;
+ 	border-right: 1px solid #9400d3;
+}
+
+.mainDate {
+ 	width: calc(100% / 7);
+  	padding: 5px;
+  	text-align: left;
+  	border-bottom: 1px solid #9400d3;
+  	border-left: 1px solid #9400d3;
+  	font-weight: 500;
+  	font-size:16px;
+  	cursor:pointer
+}
+
+.mainDay:nth-child(7n + 1)>span,
+.mainDate:nth-child(7n + 1)>span {
+  	color: #D13E3E;
+}
+
+.mainDay:nth-child(7n)>span,
+.mainDate:nth-child(7n)>span {
+  	color: #396EE2;
+}
+
+.other {
+  	opacity: .2;
+}
+
+.today {
+	  position: relative;
+	  color: #9400d3;
+	  font-weight: 600;
+}
+
+.selectDate{
+	background:#d9d2e9;
+}
+
+.selectDateEx{
+	background: none;
+}
+
+
+/* mainWriteModal */
+.mainWriteModalFrmGp .form-floating:focus-within {
+	z-index: 2;
+}
+
+.workTitle{
+	width: 100%;
+	background:#9400d3;
+	color:#fff;
+	font-weight: 600;
+	text-align: center;
+	margin-bottom:5px;
+	height:40px;
+	font-size: 20px;
+	line-height:40px;
+	border-radius: 5px;
+}
+
+.mainWriteOutForm{
+	padding:5px;
+	background:#d9d2e9;
+	border-radius: 5px;
+}
+
+.mainWriteLabelIconBox{
+	height:30px;
+	width:30px;
+	background: #fff;
+	border-radius: 5px;
+	border:0px solid #fff;
+}
+
+.mainWriteLabelIconBox:hover{
+	background:#351c75;
+}
+
+.mainWriteLabelIconBox:focus{
+	background:#351c75;
+}
+
+.mainWriteLabelIconBox:focus:active{
+	background:#351c75;
+}

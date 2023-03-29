@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="member">
+
+	<!-- 아이디 중복체크 시작 -->
+	<select id="idCheck" parameterType="hashMap" resultType="String">
+		 <![CDATA[
+		 select count(*) from member where uId = #{uId}
+		 ]]>
+	</select>
+	<!-- 아이디 중복체크 끝 -->
+	
+	<!-- 연락처 중복체크 시작 -->
+	<select id="telCheck" parameterType="hashMap" resultType="String">
+		 <![CDATA[
+		 select count(*) from member where uTel = #{uTel}
+		 ]]>
+	</select>
+	<!-- 연락처 중복체크 끝 -->
+	
+	<!-- 회원가입 시작 -->
+	<insert id="insert" parameterType="hashMap">
+		 <![CDATA[
+		 insert into member (
+		 uId, uPw, uName, uBirthday, uTel, uEmail, gender,
+		 uZipcode, uAddr, uHobby, uJob, joinTM
+		 ) values (		 
+		 #{uId}, #{uPw}, #{uName}, #{uBirthday}, #{uTel}, #{uEmail}, #{gender},
+		 #{uZipcode}, #{uAddr}, #{uHobbyRes}, #{uJob}, now()
+		 );
+		 ]]>
+	</insert>
+	<!-- 회원가입 끝 -->	
+	
+	<!-- 회원가입 후 권한 부여 시작 -->
+	<insert id="insertMatch" parameterType="hashMap">
+		 <![CDATA[
+		insert authMach(uId, atName)
+		values(#{uId},'user');
+		 ]]>
+	</insert>
+	<!-- 회원가입 후 권한 부여 끝 -->
+
+	<!-- 로그인 시작 -->
+	<select id="login" parameterType="hashMap" resultType="pack.spring.aTodoNote.member.MemberDTO">
+		 <![CDATA[
+		 select * from member
+		 where uId = #{uId} and uPw = #{uPw}
+		 ]]>
+	</select>
+	<!-- 로그인 끝 -->
+	
+	<!-- 아이디 찾기 시작 -->
+	<select id="findId" parameterType="hashMap" resultType="String">
+		 <![CDATA[
+		 select uId from member
+		 where uName = #{uName}
+			 and uTel = #{uTel}
+			 and uBirthday = #{uBirthday}
+		 ]]>
+	</select>
+	<!-- 아이디 찾기 끝 -->
+	
+	<!-- 비밀번호 찾기 - 1 : 유저넘버 찾아오기 시작 -->
+	<select id="findPw" parameterType="hashMap" resultType="String">
+		 <![CDATA[
+		 select num from member
+		 where uId = #{uId}
+			 and uName = #{uName}
+			 and uTel = #{uTel}
+			 and uBirthday = #{uBirthday}
+		 ]]>
+	</select>
+	<!-- 비밀번호 찾기 - 1 : 유저넘버 찾아오기 끝 -->
+	
+	<!-- 비밀번호 찾기 - 2 : 유저넘버에 해당하는 비밀번호 변경 시작 -->
+	<update id="findPwEdit" parameterType="hashMap">
+		 <![CDATA[
+		 update member
+		 set uPw = #{new_uPw}
+		 where num = #{findPwRes}
+		 ]]>
+	</update>
+	<!-- 비밀번호 찾기 - 2 : 유저넘버에 해당하는 비밀번호 변경 끝 -->
+	
+	<!-- 회원정보 변경 시작 -->
+	<update id="memEdit">
+		<![CDATA[
+		 update member
+		 set
+		 	uName = #{uName},
+		 	uBirthday = #{uBirthday},
+		 	uTel = #{uTel},
+		 	uEmail = #{uEmail},
+		 	gender = #{gender},
+		 	uZipcode = #{uZipcode},
+		 	uAddr = #{uAddr},
+		 	uHobby = #{uHobbyRes}, 
+		 	uJob = #{uJob} 	
+		 where uId = #{uId} and uPw = #{uPw}
+		 ]]>
+	</update>
+	<!-- 회원정보 변경 끝 -->
+	
+	<!-- 비밀번호 변경 시작 -->
+	<update id="uPwEdit" parameterType="hashMap">
+		 <![CDATA[
+		 update member
+		 set uPw = #{new_uPw}
+		 where uId = #{uPwEditUid} and uPw = #{old_uPw}
+		 ]]>
+	</update>
+	<!-- 비밀번호 변경 끝 -->
+	
+	<!-- 회원탈퇴 시작 -->
+	<delete id="memOut" parameterType="hashMap">
+		 <![CDATA[
+		 delete from member
+		 where uId = #{memOutUid} and uPw = #{memOutUPw}
+		 ]]>
+	</delete>
+	<!-- 회원탈퇴 끝 -->
+
+</mapper>
