@@ -22,6 +22,8 @@ public class MainController {
 	@Autowired
 	CalendarService calendarService;
 	
+	//b1에서 추가된 내용
+	
 	//시작 화면
 	@RequestMapping(value="/", method=RequestMethod.GET)
 	public ModelAndView index(HttpSession session) {
